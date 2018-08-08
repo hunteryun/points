@@ -27,8 +27,8 @@ function points_opapi($points, $uid = 0, $parms = array()) {
     ->fields(array(
       'uid' => $uid,
       'points' => $points,
-      'description' => isset($parms['description']) ? $parms['description'] : '',
-      'reference' => isset($parms['reference']) ? $parms['reference'] : '',
+      'description' => isset($parms['des']) ? $parms['des'] : '',
+      'reference' => isset($parms['ref']) ? $parms['ref'] : '',
       'time_stamp' => time(),
     ))
     ->execute();
