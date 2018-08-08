@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * @file
+ * Install time hook points module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function points_schema() {
+  $schema = array();
+  $schema['points'] = array(
+    'description' => 'Holds the user points',
+    'fields' => array(
+      'uid' => array(
+        'description' => 'User ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'points' => array(
+        'description' => 'Current Points',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'last_update' => array(
+        'description' => 'Timestamp',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('uid'),
+    'indexes' => array(
+      'last_update' => array('last_update'),
+      'points' => array('points'),
+    ),
+  );
+
+  $schema['points_record'] = array(
+    'description' => 'Points Transactions Record',
+    'fields' => array(
+      'rid' => array(
+        'description' => 'Transaction Record ID',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'User ID',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'points' => array(
+        'description' => 'Points',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'time_stamp' => array(
+        'description' => 'Timestamp',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'description' => array(
+        'description' => 'Description',
+        'type' => 'text',
+      ),
+      'reference' => array(
+        'description' => 'Reserved for module specific use',
+        'type' => 'varchar',
+        'length' => 128,
+      ),
+    ),
+    'primary key' => array('rid')
+  );
+  return $schema;
+}

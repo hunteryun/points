@@ -1,0 +1,5 @@
+name: Userpoints
+type: module
+description: Userpoints API module for recording points for other modules.
+core: 1.x
+package: Hunter

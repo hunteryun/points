@@ -1,0 +1,75 @@
+<?php
+
+/**
+ * Implements hook_entity_info().
+ */
+function points_entity_info() {
+  return array(
+    'name' => 'points',
+    'primaryKey' => 'uid',
+    'baseTable'  => 'points',
+  );
+}
+
+/**
+ * Save points changes.
+ */
+function points_opapi($points, $uid = 0, $parms = array()) {
+  if(!empty($uid)){
+    $account = get_user_byid($uid);
+    if (!$account) {
+      hunter_set_message('invalid uid or user account could not be loaded', 'error');
+      return FALSE;
+    }
+  }
+
+  $rid = db_insert('points_record')
+    ->fields(array(
+      'uid' => $uid,
+      'points' => $points,
+      'description' => isset($parms['description']) ? $parms['description'] : '',
+      'reference' => isset($parms['reference']) ? $parms['reference'] : '',
+      'time_stamp' => time(),
+    ))
+    ->execute();
+
+  if($rid){
+    $original_point = get_point_byuid($uid);
+
+    if(!empty($original_point)){
+      db_update('points')
+        ->fields(array(
+          'points' => $original_point+$points,
+          'last_update' => time(),
+        ))
+        ->condition('uid', $uid)
+        ->execute();
+    }else {
+      db_insert('points')
+        ->fields(array(
+          'uid' => $uid,
+          'points' => $original_point+$points,
+          'last_update' => time(),
+        ))
+        ->execute();
+
+        return TRUE;
+    }
+  }else {
+    hunter_set_message('transaction failed', 'error');
+    return FALSE;
+  }
+}
+
+/**
+ * get original point by uid
+ */
+function get_point_byuid($uid) {
+  $original_point = db_select('points', 'p')
+    ->fields('p', array('points'))
+    ->condition('p.uid', $uid)
+    ->execute()
+    ->fetchField();
+
+  return $original_point;
+}
